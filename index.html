@@ -403,7 +403,6 @@ body:not(.role-alumno) .buki-fab,body:not(.role-alumno) .buki-panel,body:not(.ro
 </style>
 </head>
 <body>
-<div class="demo-tag">PROTOTIPO v2 · CLICKEABLE</div>
 <div class="stage">
 <div class="phone">
 <div class="splash" id="filaSplash" aria-label="FilaCero cargando">
@@ -420,8 +419,7 @@ body:not(.role-alumno) .buki-fab,body:not(.role-alumno) .buki-panel,body:not(.ro
  <form id="loginForm"><label for="userLogin">Usuario</label><input id="userLogin" autocomplete="username" placeholder="Tu usuario" required>
  <label for="passLogin">Contraseña</label><input id="passLogin" type="password" autocomplete="current-password" placeholder="Tu contraseña" required>
  <div class="auth-error" id="loginError" role="alert"></div><button class="cta" type="submit">Iniciar sesión →</button></form>
- <div class="auth-demo"><button type="button" onclick="demoLogin('alumno')">Entrar como alumno</button><button type="button" onclick="demoLogin('coordinador')">Entrar como coordinador</button></div>
- </div><p class="auth-note">Acceso de demostración · No requiere base de datos</p>
+ </div><p class="auth-note">Acceso temporal · Usuario: <b>alumno</b> o <b>coordinador</b> · Contraseña: <b>123</b></p>
 </div>
 
 
@@ -702,7 +700,7 @@ document.getElementById('loginForm').addEventListener('submit',function(e){
   const u=document.getElementById('userLogin').value.trim().toLowerCase();
   const p=document.getElementById('passLogin').value.trim();
   if((u==='alumno'||u==='coordinador')&&p==='123')login(u);
-  else document.getElementById('loginError').textContent='Usuario o contraseña incorrectos. Prueba alumno / 123.';
+  else document.getElementById('loginError').textContent='Usuario o contraseña incorrectos. Revisa los datos e inténtalo de nuevo.';
 });
 function go(id){
   if(!currentRole)return;
