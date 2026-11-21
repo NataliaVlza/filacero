@@ -991,15 +991,28 @@ const ov=$('install'),goBtn=$('installGo'),skip=$('installSkip'),steps=$('instal
 const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
 const KEY='filacero_install_seen',ua=navigator.userAgent;
 const ios=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),android=/Android/.test(ua);
+const isFx=/Firefox|FxiOS/.test(ua),isEdge=/Edg\/|EdgA|EdgiOS/.test(ua),isOpera=/OPR\/|OPT\//.test(ua),isSamsung=/SamsungBrowser/.test(ua);
+const isSafari=/Safari/.test(ua)&&!/Chrome|CriOS|Chromium|Edg|EdgA|EdgiOS|OPR|OPT\/|FxiOS|Firefox|SamsungBrowser/.test(ua);
+const detOs=ios?'ios':android?'android':'desktop';
 const STEPS={
  android:['Abre FilaCero en <b>Chrome</b>.','Toca <b>Instalar app</b> aquí abajo. Si no aparece, abre el menú <b>⋮</b> del navegador.','Elige <b>Instalar app</b> o <b>Agregar a la pantalla de inicio</b>.','Confirma y busca el búho en tu pantalla de inicio.'],
  ios:['Abre FilaCero en <b>Safari</b>.','Toca el botón <b>Compartir</b> (el cuadro con una flecha hacia arriba).','Desliza y elige <b>Agregar a pantalla de inicio</b>.','Toca <b>Agregar</b>. Listo: el búho quedará con tus apps.'],
  desktop:['Usa <b>Chrome</b> o <b>Edge</b>.','Toca <b>Instalar app</b> aquí abajo o el ícono de instalar al final de la barra de direcciones.','Confirma con <b>Instalar</b>.','Se abrirá en su propia ventana y quedará en tu menú de inicio o escritorio.']};
-let os=ios?'ios':android?'android':'desktop',deferred=null;
+const BROWSER_STEPS={
+ 'android-samsung':['Abre FilaCero en <b>Samsung Internet</b>.','Toca el menú <b>☰</b> (abajo a la derecha).','Elige <b>Agregar página a</b> y luego <b>Pantalla de inicio</b> (o <b>Instalar</b>, si aparece).','Confirma y busca el búho en tu pantalla de inicio.'],
+ 'android-firefox':['Abre FilaCero en <b>Firefox</b>.','Toca el menú <b>⋮</b> del navegador.','Elige <b>Instalar</b> o <b>Agregar a la pantalla de inicio</b>.','Confirma y busca el búho en tu pantalla de inicio.'],
+ 'ios-other':['En iPhone, instalar funciona desde el botón <b>Compartir</b> (cuadro con flecha hacia arriba), en la barra de direcciones o en el menú <b>⋯</b>.','Elige <b>Agregar a pantalla de inicio</b>.','Toca <b>Agregar</b>. Listo: el búho quedará con tus apps.','Si no te aparece esa opción, abre FilaCero en <b>Safari</b> y repite los pasos.'],
+ 'desktop-safari':['Abre FilaCero en <b>Safari</b> (versión 17 o más nueva).','En la barra de menú toca <b>Archivo</b>.','Elige <b>Agregar al Dock</b>.','Confirma con <b>Agregar</b>. Se abrirá en su propia ventana.'],
+ 'desktop-firefox':['Firefox en computadora no permite instalar apps web.','Puedes usar FilaCero aquí sin problema. Guárdala en marcadores con <b>Ctrl + D</b> para volver rápido.','Si quieres instalarla, ábrela en <b>Chrome</b> o <b>Edge</b>.'],
+ 'desktop-opera':['Opera en computadora no permite instalar apps web.','Puedes usar FilaCero aquí sin problema. Guárdala en marcadores con <b>Ctrl + D</b>.','Si quieres instalarla, ábrela en <b>Chrome</b> o <b>Edge</b>.']};
+const key=detOs==='android'?(isSamsung?'android-samsung':isFx?'android-firefox':''):detOs==='ios'?(isSafari?'':'ios-other'):(isFx?'desktop-firefox':isOpera?'desktop-opera':isSafari?'desktop-safari':'');
+const NOINSTALL=key==='desktop-firefox'||key==='desktop-opera';
+function stepsFor(o){return (o===detOs&&BROWSER_STEPS[key])||STEPS[o]}
+let os=detOs,deferred=null;
 function render(){
   tabs.forEach(b=>{const on=b.dataset.os===os;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
-  steps.innerHTML=STEPS[os].map(s=>'<li><span>'+s+'</span></li>').join('');
-  goBtn.hidden=!deferred;note.hidden=!!deferred;
+  steps.innerHTML=stepsFor(os).map(s=>'<li><span>'+s+'</span></li>').join('');
+  goBtn.hidden=!deferred;note.hidden=!!deferred||(NOINSTALL&&os===detOs);
   skip.textContent=deferred?'Ahora no, seguir en el sitio web':'Continuar en el sitio web';
 }
 function open(){if(standalone)return;render();ov.hidden=false;requestAnimationFrame(()=>requestAnimationFrame(()=>ov.classList.add('on')));setTimeout(()=>(deferred?goBtn:skip).focus({preventScroll:true}),300)}
@@ -1012,7 +1025,7 @@ goBtn.onclick=async()=>{if(!deferred)return;deferred.prompt();const r=await defe
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;if(!ov.hidden)render()});
 addEventListener('appinstalled',()=>{close(true);if(homeBtn)homeBtn.hidden=true});
 if(homeBtn){homeBtn.hidden=standalone;homeBtn.onclick=open}
-function first(){let seen=null;try{seen=localStorage.getItem(KEY)}catch(e){}if(!seen)open()}
+function first(){let seen=null;try{seen=localStorage.getItem(KEY)}catch(e){}if(!seen&&!NOINSTALL)open()}
 const splash=$('filaSplash');
 if(!splash)first();else new MutationObserver((m,o)=>{if(!$('filaSplash')){o.disconnect();first()}}).observe(splash.parentNode,{childList:true});
 if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
