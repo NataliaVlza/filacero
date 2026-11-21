@@ -389,6 +389,17 @@ body:not(.role-alumno) .buki-fab,body:not(.role-alumno) .buki-panel,body:not(.ro
 @media(min-width:900px){.install{align-items:center}.install-card{border-radius:28px}}
 .install-card [hidden]{display:none!important}.demo-tag{z-index:4}
 @media(min-width:900px){.buki-panel{height:min(600px,calc(100% - 200px))}}
+/* ---------- Hero con banner (banner-hero.jpg) ---------- */
+#s-home .hero{background:#05245a url(banner-hero.jpg) right center/auto 100% no-repeat;display:flex;flex-direction:column;justify-content:center;min-height:120px}
+#s-home .hero h1{text-shadow:0 2px 12px #02122e66}
+#s-home .hero>*{max-width:58%}
+@media(min-width:641px){#s-home .hero{min-height:200px}}
+@media(max-width:640px){
+ #s-home .hero{padding-top:20px;padding-bottom:20px}
+ #s-home .hero>*{max-width:none}
+ #s-home .hero h1{font-size:21px;margin:0}
+ #s-home .hero p{display:none}
+}
 </style>
 </head>
 <body>
