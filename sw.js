@@ -5,7 +5,7 @@
    - Google Fonts: se guardan al primer uso y se actualizan en segundo plano.
    Cuando cambies index.html, sube el número de VERSION para que se renueve la caché. */
 
-const VERSION = 'v1';
+const VERSION = 'v2';
 const SHELL_CACHE = `filacero-shell-${VERSION}`;
 const FONT_CACHE = `filacero-fonts-${VERSION}`;
 
@@ -16,7 +16,8 @@ const SHELL = [
   './icon-192.png',
   './icon-512.png',
   './icon-maskable-512.png',
-  './apple-touch-icon.png'
+  './apple-touch-icon.png',
+  './banner-hero.jpg'
 ];
 
 self.addEventListener('install', event => {
