@@ -9,5 +9,3 @@ Proyecto de Ingeniería de Software · Universidad de Sonora · Ingeniería en S
 ## Probar el prototipo
 
 Abre la página publicada y entra con la cuenta de demostración (botón "Usar cuenta de demostración"), o crea una cuenta. En el prototipo el código de verificación es `123456`.
-
-> Es un prototipo: los datos son de ejemplo y no se guardan.
